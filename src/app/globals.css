@@ -1,0 +1,253 @@
+:root, [data-theme="cream"] {
+  --paper: #fbf6ec; 
+  --cream: #f2e4ce; 
+  --ink: #171717; 
+  --tint: #d5e8dc; 
+  --g1: #337957; 
+  --g2: #1a4934; 
+  --g3: #6fb894; 
+  --gold: #b49a57; 
+  --danger: #a33a2b; 
+  --shadow-btn: 3px 3px 0 #1a4934; 
+  --shadow-btn-hover: 5px 5px 0 #1a4934; 
+  --shadow-press: 2px 2px 0 #1a4934; 
+  --shadow-plate: 5px 5px 0 #1a4934; 
+  --shadow-plate-hover: 8px 8px 0 #1a4934; 
+  --shadow-bubble: 3px 3px 0 #337957; 
+  --shadow-focus: 5px 5px 0 #337957; 
+  --shadow-ink: 4px 4px 0 #171717; 
+  --shadow-ink-sm: 3px 3px 0 #171717; 
+  --shadow-menu: 8px 8px 0 #1a4934; 
+  --shadow-modal: 10px 10px 0 #1a4934; 
+}
+[data-theme="ink"] {
+  --paper: #141414;
+  --cream: #242424;
+  --ink: #f2e4ce;
+  --tint: #1e3a2d;
+  --g1: #4fa57c;
+  --g2: #337957;
+  --g3: #9bd3b0;
+  --gold: #b49a57;
+  --danger: #e58b7a;
+  --shadow-btn: 3px 3px 0 #337957;
+  --shadow-btn-hover: 5px 5px 0 #337957;
+  --shadow-press: 2px 2px 0 #337957;
+  --shadow-plate: 5px 5px 0 #337957;
+  --shadow-plate-hover: 8px 8px 0 #337957;
+  --shadow-bubble: 3px 3px 0 #4fa57c;
+  --shadow-focus: 5px 5px 0 #4fa57c;
+  --shadow-ink: 4px 4px 0 #f2e4ce;
+  --shadow-ink-sm: 3px 3px 0 #f2e4ce;
+  --shadow-menu: 8px 8px 0 #337957;
+  --shadow-modal: 10px 10px 0 #337957;
+}
+[data-theme="gold"] {
+  --paper: #b49a57;
+  --cream: #e4d1a1;
+  --ink: #171717;
+  --tint: #f2e4ce;
+  --g1: #1a4934;
+  --g2: #171717;
+  --g3: #133125;
+  --gold: #b49a57;
+  --danger: #8f2a1d;
+  --shadow-btn: 3px 3px 0 #171717;
+  --shadow-btn-hover: 5px 5px 0 #171717;
+  --shadow-press: 2px 2px 0 #171717;
+  --shadow-plate: 5px 5px 0 #171717;
+  --shadow-plate-hover: 8px 8px 0 #171717;
+  --shadow-bubble: 3px 3px 0 #1a4934;
+  --shadow-focus: 5px 5px 0 #1a4934;
+  --shadow-ink: 4px 4px 0 #171717;
+  --shadow-ink-sm: 3px 3px 0 #171717;
+  --shadow-menu: 8px 8px 0 #171717;
+  --shadow-modal: 10px 10px 0 #171717;
+}
+[data-theme="green"] {
+  --paper: #1a4934;
+  --cream: #133125;
+  --ink: #f2e4ce;
+  --tint: #245c43;
+  --g1: #7fc79c;
+  --g2: #0b1f16;
+  --g3: #9bd3b0;
+  --gold: #b49a57;
+  --danger: #e58b7a;
+  --shadow-btn: 3px 3px 0 #0b1f16;
+  --shadow-btn-hover: 5px 5px 0 #0b1f16;
+  --shadow-press: 2px 2px 0 #0b1f16;
+  --shadow-plate: 5px 5px 0 #0b1f16;
+  --shadow-plate-hover: 8px 8px 0 #0b1f16;
+  --shadow-bubble: 3px 3px 0 #7fc79c;
+  --shadow-focus: 5px 5px 0 #7fc79c;
+  --shadow-ink: 4px 4px 0 #f2e4ce;
+  --shadow-ink-sm: 3px 3px 0 #f2e4ce;
+  --shadow-menu: 8px 8px 0 #0b1f16;
+  --shadow-modal: 10px 10px 0 #0b1f16;
+}
+:root {
+  --space-1: 4px; 
+  --space-2: 8px; 
+  --space-3: 12px; 
+  --space-4: 16px; 
+  --space-5: 20px; 
+  --space-6: 30px; 
+  --square: 0; 
+  --frame: 3px; 
+  --frame-heavy: 3px; 
+  --frame-thin: 3px; 
+  --font-display: 'PMC Symbols L2', 'PMC Header', 'Shoulders', 'Arial Narrow', Impact, sans-serif;
+  --font-text: 'PMC Symbols L4 Upright', 'PMC Symbols L4', 'PMC Font Upright', 'PMC Font', 'Plex', 'Courier New', monospace;
+  --font-code: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  --text-display-xl: 400 6rem/0.86 var(--font-display); 
+  --text-display-l: 400 3.4rem/0.9 var(--font-display); 
+  --text-display-m: 400 1.6rem/0.95 var(--font-display); 
+  --text-display-s: 400 1.7rem/0.92 var(--font-display); 
+  --text-button: 400 1.1rem/1 var(--font-display); 
+  --text-label: 400 1.15rem/1 var(--font-display); 
+  --text-body: 400 1.05rem/1.65 var(--font-text); 
+  --text-chat: 400 0.98rem/1.55 var(--font-text); 
+  --text-hint: 400 0.88rem/1.4 var(--font-text); 
+  --text-small: 400 0.875rem/1.4 var(--font-text); 
+  --text-code: 400 0.9rem/1.6 var(--font-code); 
+}
+.display-xl {
+  font-family: var(--font-display);
+  font-size: 6rem;
+  line-height: 0.86;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.display-l {
+  font-family: var(--font-display);
+  font-size: 3.4rem;
+  line-height: 0.9;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.display-m {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  line-height: 0.95;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.display-s {
+  font-family: var(--font-display);
+  font-size: 1.7rem;
+  line-height: 0.92;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.button {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+.label {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  line-height: 1;
+  font-weight: 400;
+  letter-spacing: 0.03em;
+}
+.body {
+  font-family: var(--font-text);
+  font-size: 1.05rem;
+  line-height: 1.65;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.chat {
+  font-family: var(--font-text);
+  font-size: 0.98rem;
+  line-height: 1.55;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.hint {
+  font-family: var(--font-text);
+  font-size: 0.88rem;
+  line-height: 1.4;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.small {
+  font-family: var(--font-text);
+  font-size: 0.875rem;
+  line-height: 1.4;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.code {
+  font-family: var(--font-code);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+@font-face {
+  font-family: "PMC Header";
+  src: url("/fonts/PMCHeader.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PMC Font";
+  src: url("/fonts/PMCFont.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PMC Font Upright";
+  src: url("/fonts/PMCFontUpright.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PMC Symbols L2";
+  src: url("/fonts/PMCSymbolsL2.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PMC Symbols L4";
+  src: url("/fonts/PMCSymbolsL4.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "PMC Symbols L4 Upright";
+  src: url("/fonts/PMCSymbolsL4Upright.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Shoulders";
+  src: url("/fonts/BigShouldersDisplay-900.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Plex";
+  src: url("/fonts/IBMPlexMono-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+html{font-size:16px}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-text);font-size:22px;line-height:1.45}
+.d{font-family:var(--font-display);text-transform:uppercase;font-weight:400;letter-spacing:.03em}
