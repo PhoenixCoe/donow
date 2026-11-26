@@ -4,7 +4,6 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Do Now',
   description: 'Start-of-lesson recall questions for the classroom screen.',
-  robots: { index: false, follow: false },
   referrer: 'no-referrer',
   icons: { icon: '/favicon.svg' },
 };
