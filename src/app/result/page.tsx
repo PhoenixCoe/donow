@@ -46,9 +46,9 @@ export default function Result() {
           ) : (
             <>
               <div>
-                <div className="lab" style={{ marginBottom: 10 }}>{cls.name} · {dayName(d)}{period ? ` period ${period}` : ''}</div>
+                <div className="lab" style={{ marginBottom: 8 }}>{cls.name} · {dayName(d)}{period ? ` period ${period}` : ''}</div>
                 <h1 className="h1 m">How did the class do?</h1>
-                <p style={{ margin: '14px 0 0', maxWidth: '62ch' }}>Tap only the ones that went differently. Most is over three quarters of the class, some is a quarter to three quarters, few is under a quarter. Nothing is saved about students.</p>
+                <p style={{ margin: '11px 0 0', maxWidth: '62ch' }}>Tap only the ones that went differently. Most is over three quarters of the class, some is a quarter to three quarters, few is under a quarter. Nothing is saved about students.</p>
               </div>
               <div className="plate big">
                 {rows.map(({ q, i }) => (

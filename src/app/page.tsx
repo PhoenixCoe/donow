@@ -28,9 +28,9 @@ export default function Today() {
     const go = () => { if (first.trim()) update((d) => addClass(d, first).data); };
     return (
       <Page active="today" add={false}>
-        <main className="one" style={{ maxWidth: 760 }}>
-          <div><div className="lab" style={{ marginBottom: 10 }}>Start here</div><h1 className="h1 m">Add your first class</h1></div>
-          <form className="plate big" style={{ padding: '24px 26px', display: 'flex', flexDirection: 'column', gap: 20 }} onSubmit={(e) => { e.preventDefault(); go(); }}>
+        <main className="one" style={{ maxWidth: 640 }}>
+          <div><div className="lab" style={{ marginBottom: 8 }}>Start here</div><h1 className="h1 m">Add your first class</h1></div>
+          <form className="plate big" style={{ padding: '20px 21px', display: 'flex', flexDirection: 'column', gap: 16 }} onSubmit={(e) => { e.preventDefault(); go(); }}>
             <label className="fld"><span className="lab">Class name</span><input className="f" value={first} onChange={(e) => setFirst(e.target.value)} placeholder="9X3 Science" autoFocus maxLength={40} /></label>
             <div className="row"><button type="submit" className="btn p big" disabled={!first.trim()}>Add class</button><span className="hint">You can add more classes later.</span></div>
           </form>
@@ -65,11 +65,11 @@ export default function Today() {
         <main className="dash">
           <header className="rowend">
             <div>
-              <div className="row" style={{ gap: 14, marginBottom: 10 }}><span className="lab">{dayName(today)}{period ? ` · period ${period}` : ''}</span><SyncChip /></div>
+              <div className="row" style={{ gap: 14, marginBottom: 8 }}><span className="lab">{dayName(today)}{period ? ` · period ${period}` : ''}</span><SyncChip /></div>
               <h1 className="h1">{cls.name}</h1>
             </div>
             {data.classes.length > 1 && (
-              <label className="fld" style={{ width: 230 }}><span className="lab">Class</span>
+              <label className="fld" style={{ width: 190 }}><span className="lab">Class</span>
                 <Sel label="Class" value={cid} onChange={choose}>{data.classes.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</Sel></label>
             )}
           </header>
@@ -116,7 +116,7 @@ export default function Today() {
                 {tops.length === 0 && <div className="empty hint">After you mark a Do Now, how {cls.name} is doing on each topic shows here.</div>}
                 {tops.slice(0, 4).map((t) => (
                   <Link className="tr" key={t.id} href={`/questions/?t=${t.id}`} aria-label={`${t.name}: ${t.status}. Open its questions.`}>
-                    <div className="trh"><span className="d" style={{ fontSize: 28, lineHeight: 1 }}>{t.name}</span><span className={statusChip(t.status)}>{t.status}</span></div>
+                    <div className="trh"><span className="d" style={{ fontSize: 23, lineHeight: 1 }}>{t.name}</span><span className={statusChip(t.status)}>{t.status}</span></div>
                     <div className="mb" role="img" aria-label={`Most ${t.most}, some ${t.some}, few ${t.few}, not asked ${t.fresh}`}>
                       {t.most > 0 && <i className="m0" style={{ flex: t.most }} />}{t.some > 0 && <i className="m1" style={{ flex: t.some }} />}{t.few > 0 && <i className="m2" style={{ flex: t.few }} />}{t.fresh > 0 && <i style={{ flex: t.fresh }} />}
                     </div>
@@ -139,7 +139,7 @@ export default function Today() {
                 <>
                   <Graph bars={bars} name={cls.name} />
                   <div className="pf">
-                    <span className="chip k0">Most got it</span><span className="chip bad">Few got it</span>
+                    <span className="chip">Most got it</span><span className="chip bad">Few got it</span>
                     <span className="hint">Each point is one Do Now.{avg.pct !== null && ` In the last ${avg.used} most of the class got ${avg.pct}% of the questions${avg.change === null ? '' : avg.change === 0 ? ', the same as the 5 before' : `, ${avg.change > 0 ? 'up' : 'down'} ${Math.abs(avg.change)} point${Math.abs(avg.change) === 1 ? '' : 's'} on the 5 before`}.`}</span>
                   </div>
                 </>

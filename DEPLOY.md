@@ -16,6 +16,9 @@ Sign in uses PMC ID (Supabase). Steps 1 to 3 connect it.
 10. Open https://donow.pmcstudios.uk and press Ctrl+Shift+R. To check everything at once, run `node check-setup.mjs` (Node 18 or newer). Every line should say `ok`.
 
 ## Ideas from Coe
+
+**Switched off for now.** None of the steps below do anything until it is switched back on. To switch it on: in `src/lib/coe.ts` change `COE_ENABLED = false` to `true`, then do the steps below and rerun the Deploy workflow.
+
 1. Cloudflare dashboard > **Workers & Pages** > the Coe worker > **Settings** > **Variables and Secrets** > edit `ALLOWED_ORIGINS` and add `,https://donow.pmcstudios.uk` on the end (a comma, no space). **Deploy**.
 2. Repository > Settings > Secrets and variables > Actions > **Variables** > **New repository variable**. Name `COE_SERVER`, value: the Coe worker address (the same one the Coe site uses, like `https://coe-server.yourname.workers.dev`).
 3. **Actions** > **Deploy Do Now** > **Run workflow**.

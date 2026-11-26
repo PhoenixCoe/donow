@@ -17,9 +17,9 @@ export default function SignIn() {
 
   return (
     <Page active="" bare>
-      <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 28px 64px' }}>
+      <main style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '33px 23px 52px' }}>
         <div className="sg">
-          <div className="sl"><h1 className="h1" style={{ fontSize: 78, maxWidth: '6ch' }}>Sign in</h1></div>
+          <div className="sl"><h1 className="h1" style={{ fontSize: 62, maxWidth: '6ch' }}>Sign in</h1></div>
           <div className="sx">
             <h2>Teachers sign in with PMC ID</h2>
             <p>Your questions are saved to your account, so they are there on any classroom computer.</p>

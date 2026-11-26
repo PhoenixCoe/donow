@@ -38,9 +38,9 @@ export default function Timetable() {
       <main className="wrap">
         <section className="col" style={{ flex: '999 1 660px' }}>
           <div>
-            <div className="lab" style={{ marginBottom: 10 }}>Set it once</div>
+            <div className="lab" style={{ marginBottom: 8 }}>Set it once</div>
             <h1 className="h1 m">Timetable</h1>
-            <p style={{ margin: '14px 0 0', maxWidth: '60ch' }}>{data.classes.length ? 'Tap a lesson to change its class. Today opens on the right class by itself.' : 'Add your classes first, then tap each lesson to pick its class.'}</p>
+            <p style={{ margin: '11px 0 0', maxWidth: '60ch' }}>{data.classes.length ? 'Tap a lesson to change its class. Today opens on the right class by itself.' : 'Add your classes first, then tap each lesson to pick its class.'}</p>
           </div>
 
           <div className="plate big">
@@ -62,7 +62,7 @@ export default function Timetable() {
           </div>
         </section>
 
-        <aside className="col" style={{ flex: '1 1 320px' }}>
+        <aside className="col" style={{ flex: '1 1 280px' }}>
           <div className="plate">
             <div className="ph"><span>My classes</span></div>
             {data.classes.map((c) => (
@@ -88,7 +88,7 @@ export default function Timetable() {
                   )}
                 </div>
                 {del === c.id && (
-                  <div className="note" role="alert" style={{ margin: '0 20px 14px', display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
+                  <div className="note" role="alert" style={{ margin: '0 16px 11px', display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
                     <span style={{ flex: '1 1 200px' }}>Remove {c.name}? Its lessons and results go too.</span>
                     <button type="button" className="btn danger s" onClick={() => { update((x) => removeClass(x, c.id)); setDel(''); }}>Yes, remove</button>
                     <button type="button" className="btn s" onClick={() => setDel('')}>Keep it</button>

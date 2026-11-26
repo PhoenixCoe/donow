@@ -48,9 +48,9 @@ export default function Questions() {
   if (!data.topics.length) {
     return (
       <Page active="questions">
-        <main className="one" style={{ maxWidth: 760 }}>
-          <div><div className="lab" style={{ marginBottom: 10 }}>Question bank</div><h1 className="h1 m">Add your first topic</h1></div>
-          <form className="plate big" style={{ padding: '24px 26px', display: 'flex', flexDirection: 'column', gap: 20 }} onSubmit={(e) => { e.preventDefault(); create(); }}>
+        <main className="one" style={{ maxWidth: 640 }}>
+          <div><div className="lab" style={{ marginBottom: 8 }}>Question bank</div><h1 className="h1 m">Add your first topic</h1></div>
+          <form className="plate big" style={{ padding: '20px 21px', display: 'flex', flexDirection: 'column', gap: 16 }} onSubmit={(e) => { e.preventDefault(); create(); }}>
             <label className="fld"><span className="lab">Topic name</span><input className="f" value={name} onChange={(e) => setName(e.target.value)} placeholder="Cells" maxLength={60} autoFocus /></label>
             <div className="row"><button type="submit" className="btn p big" disabled={!name.trim()}>Add topic</button><span className="hint">Questions are kept in topics. Do Now picks across them.</span></div>
           </form>
@@ -81,7 +81,7 @@ export default function Questions() {
             ) : <button type="button" className="tp" onClick={() => setAdding(true)}>New topic</button>}
           </div>
           {data.qs.length > 0 && (
-            <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'flex-start' }}>
+            <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 8, alignItems: 'flex-start' }}>
               <button type="button" className="btn s" onClick={() => saveFile(`do-now-questions-${today}.csv`, questionsCsv(data))}>Download spreadsheet</button>
               <span className="hint">All your questions and how each class did. Opens in Excel, Sheets or Numbers.</span>
             </div>
@@ -94,11 +94,11 @@ export default function Questions() {
               <div className="row" style={{ alignItems: 'flex-end' }}>
                 {renaming ? (
                   <form className="row" style={{ flexGrow: 1 }} onSubmit={(e) => { e.preventDefault(); if (rn.trim()) { update((d) => renameTopic(d, topic.id, rn)); setRenaming(false); } }}>
-                    <input className="f" style={{ maxWidth: 420 }} value={rn} onChange={(e) => setRn(e.target.value)} aria-label="Topic name" maxLength={60} autoFocus />
+                    <input className="f" style={{ maxWidth: 350 }} value={rn} onChange={(e) => setRn(e.target.value)} aria-label="Topic name" maxLength={60} autoFocus />
                     <button type="submit" className="btn p s" disabled={!rn.trim()}>Save</button><button type="button" className="btn q s" onClick={() => setRenaming(false)}>Cancel</button>
                   </form>
                 ) : <h1 className="h1 m" style={{ flexGrow: 1, overflowWrap: 'anywhere' }}>{topic.name}</h1>}
-                {data.classes.length > 1 && <label className="fld" style={{ width: 200 }}><span className="lab">Results for</span><Sel label="Results for class" value={cid} onChange={choose}>{data.classes.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</Sel></label>}
+                {data.classes.length > 1 && <label className="fld" style={{ width: 165 }}><span className="lab">Results for</span><Sel label="Results for class" value={cid} onChange={choose}>{data.classes.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</Sel></label>}
                 <label className="fld" style={{ flex: '1 1 240px' }}><span className="lab">Search</span><input className="f" value={find} onChange={(e) => setFind(e.target.value)} placeholder="Find a question" /></label>
                 <Link href={`/add/?list=1&t=${topic.id}`} className="btn">Import from a list</Link>
               </div>
@@ -118,7 +118,7 @@ export default function Questions() {
                     const on = taughtOn(data, c.id, topic.id, today), last = lastTaught(data, c.id, topic.id);
                     return (
                       <div className="qr" key={c.id} style={{ flexWrap: 'wrap' }}>
-                        <span className="d" style={{ fontSize: 30, minWidth: 90, flexShrink: 0 }}>{c.name}</span>
+                        <span className="d" style={{ fontSize: 25, minWidth: 75, flexShrink: 0 }}>{c.name}</span>
                         <span className={on ? 'chip' : last ? 'chip gold' : 'chip none'}>{on ? 'Taught today' : last ? `Taught ${niceDate(last)}` : 'Not taught yet'}</span>
                         <span className="tx" />
                         <button type="button" className={on ? 'btn' : 'btn p'} onClick={() => update((d) => toggleTaught(d, c.id, topic.id, today))}>{on ? 'Undo' : 'Taught today'}</button>
@@ -129,7 +129,7 @@ export default function Questions() {
               )}
 
               <div className="plate big">
-                <div className="ph" style={{ fontSize: 22 }}><span style={{ flex: 3 }}>Question</span><span style={{ flex: 1.2 }}>Type</span><span style={{ flex: 1.2 }}>Last result</span></div>
+                <div className="ph" style={{ fontSize: 18 }}><span style={{ flex: 3 }}>Question</span><span style={{ flex: 1.2 }}>Type</span><span style={{ flex: 1.2 }}>Last result</span></div>
                 {list.map((q) => (
                   <Link key={q.id} href={`/add/?id=${q.id}`} className="tg" aria-label={`Edit: ${q.q}`}>
                     <span style={{ overflowWrap: 'anywhere' }}>{q.q}</span><span className="hint">{KIND[q.k]}</span><span>{chip(q)}</span>

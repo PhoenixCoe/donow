@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { Page } from '@/components/Page';
 import { CoeMark, Seg, Sel, Switch } from '@/components/ui';
-import { getIdeas, coeOn, type Idea } from '@/lib/coe';
+import { getIdeas, coeOn, COE_ENABLED, type Idea } from '@/lib/coe';
 import { addTopic, makeQ, saveMany } from '@/lib/ops';
 import { useClass, useStore } from '@/lib/store';
 import { useParams } from '@/lib/useParams';
@@ -60,12 +60,25 @@ export default function CoeIdeas() {
     router.push(`/questions/?t=${r.id}`);
   };
 
+  /* Switched off for now: a plain page, nothing about Coe. */
+  if (!COE_ENABLED) {
+    return (
+      <Page active="questions">
+        <main className="one" style={{ maxWidth: 640 }}>
+          <h1 className="h1 m">Not here yet</h1>
+          <p>This page is switched off for now. You can still add questions yourself.</p>
+          <div className="row"><Link href="/add/" className="btn p big">Add a question</Link></div>
+        </main>
+      </Page>
+    );
+  }
+
   if (!coeOn || (ready && !who)) {
     return (
       <Page active="questions">
-        <main className="one" style={{ maxWidth: 760 }}>
-          <div className="row" style={{ gap: 16, flexWrap: 'nowrap' }}><CoeMark fill="#337957" style={{ width: 46, height: 84, flexShrink: 0 }} /><h1 className="h1 m">Ideas from Coe</h1></div>
-          <div className="plate big" style={{ padding: '24px 26px', display: 'flex', flexDirection: 'column', gap: 18 }}>
+        <main className="one" style={{ maxWidth: 640 }}>
+          <div className="row" style={{ gap: 13, flexWrap: 'nowrap' }}><CoeMark fill="#337957" style={{ width: 38, height: 69, flexShrink: 0 }} /><h1 className="h1 m">Ideas from Coe</h1></div>
+          <div className="plate big" style={{ padding: '20px 21px', display: 'flex', flexDirection: 'column', gap: 18 }}>
             {coeOn ? <><p>Sign in with your PMC ID and Coe can suggest questions for any topic. You check each one before it is kept.</p><div className="row"><Link href="/signin/" className="btn p big">Sign in</Link><Link href="/add/" className="btn q">Add a question yourself</Link></div></>
               : <><p>Ideas from Coe is not available right now. You can still add questions yourself.</p><div className="row"><Link href="/add/" className="btn p big">Add a question</Link></div></>}
           </div>
@@ -79,10 +92,10 @@ export default function CoeIdeas() {
       <main className="wrap">
         <section className="col" style={{ flex: '1 1 360px' }}>
           <div className="row" style={{ gap: 16, flexWrap: 'nowrap' }}>
-            <CoeMark fill="#337957" style={{ width: 46, height: 84, flexShrink: 0 }} />
+            <CoeMark fill="#337957" style={{ width: 38, height: 69, flexShrink: 0 }} />
             <h1 className="h1 m">Ideas from Coe</h1>
           </div>
-          <form className="plate big" style={{ padding: '24px 24px 26px', display: 'flex', flexDirection: 'column', gap: 20 }} onSubmit={(e) => { e.preventDefault(); void ask(); }}>
+          <form className="plate big" style={{ padding: '24px 24px 26px', display: 'flex', flexDirection: 'column', gap: 16 }} onSubmit={(e) => { e.preventDefault(); void ask(); }}>
             <label className="fld"><span className="lab">Topic</span><input className="f" value={topic} onChange={(e) => setTopic(e.target.value)} maxLength={80} placeholder="Forces" autoFocus /></label>
             <div className="fld"><span className="lab">Year group</span><Sel label="Year group" value={year} onChange={setYear}>{YEARS.map((y) => <option key={y}>{y}</option>)}</Sel></div>
             <div className="fld"><span className="lab">How many</span><Seg label="How many ideas" value={n} onChange={setN} options={[[3, '3'], [5, '5'], [8, '8']]} /></div>
@@ -100,7 +113,7 @@ export default function CoeIdeas() {
         <section className="col" style={{ flex: '999 1 620px' }}>
           <div className="plate big" aria-live="polite">
             <div className="ph"><span>{rows ? `${rows.length} ideas for ${topic.trim() || 'your topic'}` : 'Ideas'}</span>{rows && <small>Check each answer before you use it</small>}</div>
-            {!rows && <div className="empty hint" style={{ fontSize: 22 }}>{busy ? 'Coe is writing questions. This takes a few seconds.' : 'Ideas show here. You check each one first, and only the ones you add are kept.'}</div>}
+            {!rows && <div className="empty hint" style={{ fontSize: 18 }}>{busy ? 'Coe is writing questions. This takes a few seconds.' : 'Ideas show here. You check each one first, and only the ones you add are kept.'}</div>}
             {rows?.map((r, i) => (
               <div className="qr" key={i} style={{ alignItems: 'flex-start', flexWrap: 'wrap' }}>
                 <span className="tx" style={{ flexBasis: 280 }}>
@@ -113,7 +126,7 @@ export default function CoeIdeas() {
                 </span>
                 <div className="row" style={{ gap: 10, flexShrink: 0 }}>
                   <button type="button" className="btn s" onClick={() => set(i, { edit: !r.edit })}>{r.edit ? 'Done' : 'Edit'}</button>
-                  <button type="button" className={r.on ? 'btn s p' : 'btn s'} style={{ minWidth: 96 }} aria-pressed={r.on} onClick={() => set(i, { on: !r.on })}>{r.on ? 'Added' : 'Add'}</button>
+                  <button type="button" className={r.on ? 'btn s p' : 'btn s'} style={{ minWidth: 80 }} aria-pressed={r.on} onClick={() => set(i, { on: !r.on })}>{r.on ? 'Added' : 'Add'}</button>
                 </div>
               </div>
             ))}

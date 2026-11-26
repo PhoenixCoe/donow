@@ -115,11 +115,11 @@ export default function Add() {
   const back = tid && tid !== NEW ? `/questions/?t=${tid}` : '/questions/';
 
   if (editId && ready && p && !editing) {
-    return <Page active="questions"><main className="one" style={{ maxWidth: 760 }}><h1 className="h1 m">Question not found</h1><p>It may have been deleted on another computer.</p><div className="row"><Link href="/questions/" className="btn p big">Back to questions</Link></div></main></Page>;
+    return <Page active="questions"><main className="one" style={{ maxWidth: 640 }}><h1 className="h1 m">Question not found</h1><p>It may have been deleted on another computer.</p><div className="row"><Link href="/questions/" className="btn p big">Back to questions</Link></div></main></Page>;
   }
 
   const aside = (
-    <div style={{ flex: '1 1 320px', padding: '24px 26px', background: 'var(--paper)', borderLeft: '3px solid #171717', display: 'flex', flexDirection: 'column', gap: 20 }}>
+    <div style={{ flex: '1 1 280px', padding: '20px 21px', background: 'var(--paper)', borderLeft: '3px solid #171717', display: 'flex', flexDirection: 'column', gap: 16 }}>
       <div className="fld"><span className="lab">Topic</span>
         <Sel label="Topic" value={tid || NEW} onChange={setTid}>
           {data.topics.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
@@ -158,14 +158,14 @@ export default function Add() {
 
         <form className="plate big" style={{ display: 'flex', flexWrap: 'wrap' }} onSubmit={(e) => { e.preventDefault(); if (listMode) submitList(); else submit(true); }}>
           {listMode ? (
-            <div style={{ flex: '999 1 560px', minWidth: 0, padding: '24px 26px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div style={{ flex: '999 1 480px', minWidth: 0, padding: '20px 21px', display: 'flex', flexDirection: 'column', gap: 16 }}>
               <label className="fld"><span className="lab">Your list</span>
                 <textarea className="f" rows={9} value={text} onChange={(e) => setText(e.target.value)} placeholder={'What unit is force measured in? | Newtons (N)\nWhich gas do plants take in? | Carbon dioxide'} autoFocus /></label>
               <span className="hint">One question per line. Then a | (or a tab, if you paste from a spreadsheet), then the answer.</span>
               {text.trim() && <div className="note">{rows.length ? `${rows.length} question${rows.length === 1 ? '' : 's'} ready to add.` : 'No questions found yet.'}</div>}
             </div>
           ) : (
-            <div style={{ flex: '999 1 560px', minWidth: 0, padding: '24px 26px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+            <div style={{ flex: '999 1 480px', minWidth: 0, padding: '20px 21px', display: 'flex', flexDirection: 'column', gap: 16 }}>
               <div><Seg label="Question type" value={kind} onChange={setKind} options={KINDS} /></div>
               <label className="fld"><span className="lab">Question</span>
                 <textarea ref={qRef} className="f" rows={2} value={q} maxLength={400} autoFocus={!editing} onChange={(e) => setQ(e.target.value)}
@@ -190,9 +190,9 @@ export default function Add() {
               {kind === 'pic' && (
                 <div className="fld"><span className="lab">Picture</span>
                   <div onDragOver={(e) => e.preventDefault()} onDrop={(e) => { e.preventDefault(); void take(e.dataTransfer.files[0]); }}
-                    style={{ border: '3px dashed #171717', padding: 22, textAlign: 'center', background: 'var(--paper)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
+                    style={{ border: '3px dashed #171717', padding: 18, textAlign: 'center', background: 'var(--paper)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
                     {/* eslint-disable-next-line @next/next/no-img-element */}
-                    {pic && <img src={pic} alt="The picture for this question" style={{ maxWidth: '100%', maxHeight: 220, border: '3px solid #171717' }} />}
+                    {pic && <img src={pic} alt="The picture for this question" style={{ maxWidth: '100%', maxHeight: 180, border: '3px solid #171717' }} />}
                     <span>{pic ? 'Drop or paste another picture to replace it.' : 'Drop a picture or diagram here, or paste one.'}</span>
                     <div className="row" style={{ justifyContent: 'center' }}>
                       <button type="button" className="btn" onClick={() => file.current?.click()}>Choose a picture</button>

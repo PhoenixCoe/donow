@@ -55,22 +55,22 @@ export default function Flashcards() {
 
   return (
     <Page active="cards">
-      <main className="one" style={{ maxWidth: 940 }}>
+      <main className="one" style={{ maxWidth: 780 }}>
         {total === 0 && !finished ? (
           <>
-            <div><div className="lab" style={{ marginBottom: 10 }}>Revision</div><h1 className="h1 m">Flashcards</h1></div>
+            <div><div className="lab" style={{ marginBottom: 8 }}>Revision</div><h1 className="h1 m">Flashcards</h1></div>
             <div className="plate big"><div className="empty" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}><p>Flashcards are made from your questions. Add a few first.</p><div className="row"><Link href="/add/" className="btn p big">Add a question</Link></div></div></div>
           </>
         ) : (
           <>
             <div className="rowend">
-              <div><div className="lab" style={{ marginBottom: 10 }}>Topic</div><h1 className="h1 m" style={{ overflowWrap: 'anywhere' }}>{topic ? topic.name : 'All topics'}</h1></div>
+              <div><div className="lab" style={{ marginBottom: 8 }}>Topic</div><h1 className="h1 m" style={{ overflowWrap: 'anywhere' }}>{topic ? topic.name : 'All topics'}</h1></div>
               <div className="row" style={{ gap: 18 }}>
-                {data.topics.length > 1 && <label className="fld" style={{ width: 230 }}><span className="lab">Choose a topic</span>
+                {data.topics.length > 1 && <label className="fld" style={{ width: 190 }}><span className="lab">Choose a topic</span>
                   <Sel label="Topic" value={tid === ALL ? ALL : topic?.id ?? ''} onChange={setTid}>
                     {data.topics.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}<option value={ALL}>All topics</option>
                   </Sel></label>}
-                {!finished && <div className="d" style={{ fontSize: 28 }}>Card {Math.min(i, n - 1) + 1} of {n}</div>}
+                {!finished && <div className="d" style={{ fontSize: 23 }}>Card {Math.min(i, n - 1) + 1} of {n}</div>}
               </div>
             </div>
 
@@ -87,16 +87,16 @@ export default function Flashcards() {
                 <button type="button" className="fc" onClick={() => setBack((b) => !b)} aria-label="Flip the card" style={{ background: back ? '#1A4934' : '#fff', color: back ? 'var(--paper)' : '#171717' }}>
                   <span className="lab">{back ? 'Answer' : 'Question'}</span>
                   {!back && card.k === 'pic' && card.pic && /* eslint-disable-next-line @next/next/no-img-element */ <img src={card.pic} alt="Picture for the question" />}
-                  <span style={{ fontSize: 44, lineHeight: 1.2, overflowWrap: 'anywhere' }}>{back ? (card.k === 'choice' ? `${LETTERS[card.ri ?? 0]}. ${answerOf(card)}` : answerOf(card)) : card.q}</span>
-                  {!back && card.k === 'choice' && card.ch && <span style={{ fontSize: 28, lineHeight: 1.3 }}>{card.ch.map((c, j) => `${LETTERS[j]} ${c}`).join('   ·   ')}</span>}
+                  <span style={{ fontSize: 36, lineHeight: 1.2, overflowWrap: 'anywhere' }}>{back ? (card.k === 'choice' ? `${LETTERS[card.ri ?? 0]}. ${answerOf(card)}` : answerOf(card)) : card.q}</span>
+                  {!back && card.k === 'choice' && card.ch && <span style={{ fontSize: 23, lineHeight: 1.3 }}>{card.ch.map((c, j) => `${LETTERS[j]} ${c}`).join('   ·   ')}</span>}
                   <span className="hint">Click the card to flip it</span>
                 </button>
 
                 <div className="rowend" style={{ alignItems: 'center' }}>
                   <button type="button" className="btn big" onClick={() => go(-1)}>Back</button>
                   <div className="row" style={{ gap: 14 }}>
-                    <button type="button" className="btn" style={{ background: '#D5E8DC' }} onClick={() => done(true)}>Got it</button>
-                    <button type="button" className="btn" style={{ background: '#E8C98A' }} onClick={() => done(false)}>Not yet</button>
+                    <button type="button" className="btn" style={{ background: 'var(--g1)', color: 'var(--paper)' }} onClick={() => done(true)}>Got it</button>
+                    <button type="button" className="btn" style={{ background: 'var(--gold)' }} onClick={() => done(false)}>Not yet</button>
                   </div>
                   <button type="button" className="btn p big" onClick={() => go(1)}>Next</button>
                 </div>

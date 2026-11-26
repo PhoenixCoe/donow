@@ -2,7 +2,9 @@ import { cloudOn, token } from './cloud';
 
 /** Ideas from Coe: the teacher's own PMC ID is used, so it counts against their own Coe tokens for the day. Nothing is saved until the teacher presses Add. */
 export const COE_SERVER = (process.env.NEXT_PUBLIC_COE_SERVER ?? '').trim().replace(/\/+$/, '');
-export const coeOn = cloudOn && /^https:\/\/[a-z0-9.-]+$/i.test(COE_SERVER);
+/** Ideas from Coe is switched off for now. All of it is still here: change this to true to switch it back on. */
+export const COE_ENABLED = false;
+export const coeOn = COE_ENABLED && cloudOn && /^https:\/\/[a-z0-9.-]+$/i.test(COE_SERVER);
 
 export interface Idea { q: string; a: string }
 
