@@ -44,6 +44,7 @@ jobs:
       - run: npm ci
       - run: npm run build:static
         env:
+          NEXT_PUBLIC_COE_SERVER: ${{ vars.COE_SERVER }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.SUPABASE_ANON_KEY }}
       - name: Check the built site for secret keys
