@@ -5,6 +5,12 @@ import { getSet, markShown } from '@/lib/ops';
 import { useClass, useStore } from '@/lib/store';
 import { answerOf, LETTERS, short, type Q } from '@/lib/types';
 
+/* Full screen: the browser's own full screen where it has one, and the same big layout without it where it does not (an iPhone, say). */
+type FsDoc = Document & { webkitFullscreenElement?: Element | null; webkitExitFullscreen?: () => Promise<void> | void; webkitFullscreenEnabled?: boolean };
+type FsEl = HTMLElement & { webkitRequestFullscreen?: () => Promise<void> | void };
+const fsNow = () => { const d = document as FsDoc; return !!(d.fullscreenElement || d.webkitFullscreenElement); };
+const fsCan = () => { const d = document as FsDoc; return !!(d.fullscreenEnabled || d.webkitFullscreenEnabled); };
+
 const mmss = (ms: number) => { const s = Math.max(0, Math.ceil(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
 
 /** The class screen. Big type for the back row, a timer, and the answers shown one at a time. */
@@ -19,6 +25,27 @@ export default function Board() {
   const [left, setLeft] = useState(total);
   const [run, setRun] = useState(true);
   const end = useRef(0), extra = useRef(0);
+  const [hard, setHard] = useState(false), [soft, setSoft] = useState(false);
+  const fs = hard || soft;
+
+  const toggleFs = useCallback(async () => {
+    try {
+      const d = document as FsDoc;
+      if (fsNow()) { await (d.exitFullscreen ? d.exitFullscreen() : d.webkitExitFullscreen?.()); return; }
+      if (soft) { setSoft(false); return; }
+      if (fsCan()) { const el = document.documentElement as FsEl; await (el.requestFullscreen ? el.requestFullscreen() : el.webkitRequestFullscreen?.()); return; }
+      setSoft(true);
+    } catch { setSoft((s) => !s); }
+  }, [soft]);
+  useEffect(() => {
+    const f = () => setHard(fsNow());
+    document.addEventListener('fullscreenchange', f); document.addEventListener('webkitfullscreenchange', f);
+    return () => {
+      document.removeEventListener('fullscreenchange', f); document.removeEventListener('webkitfullscreenchange', f);
+      /* Leaving the board (Back, Finish) leaves full screen too. */
+      if (fsNow()) { const d = document as FsDoc; void Promise.resolve(d.exitFullscreen ? d.exitFullscreen() : d.webkitExitFullscreen?.()).catch(() => { /* already out */ }); }
+    };
+  }, []);
 
   /* Being on the board counts as shown, so Today can ask for the marks later if it is skipped. */
   useEffect(() => { if (ready && cid && set) update((d) => markShown(d, cid, today)); }, [ready, cid, today, !!set]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -52,10 +79,12 @@ export default function Board() {
       if (tag === 'BUTTON' || tag === 'A' || tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
       if (e.key === ' ' || e.key === 'ArrowRight' || e.key === 'PageDown') { e.preventDefault(); next(); }
       else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); setN((v) => Math.max(0, v - 1)); }
+      else if ((e.key === 'f' || e.key === 'F') && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); void toggleFs(); }
+      else if (e.key === 'Escape' && soft) setSoft(false);
     };
     window.addEventListener('keydown', k);
     return () => window.removeEventListener('keydown', k);
-  }, [next]);
+  }, [next, toggleFs, soft]);
 
   if (!ready) return <div className="pg"><main className="bm"><p className="hint">Loading</p></main></div>;
   if (!cls || !qs.length) {
@@ -68,13 +97,14 @@ export default function Board() {
   }
 
   return (
-    <div className="pg">
+    <div className={fs ? 'pg fs' : 'pg'}>
       <header className="bh">
         <div className="bt">Do Now <span>· {short(cls)}</span></div>
         <div className="row" style={{ gap: 14 }}>
           <div className={left <= 0 ? 'timer out' : 'timer'} role="timer" aria-label="Time left">{mmss(left)}</div>
           <button type="button" className="btn big on-ink" onClick={() => (left <= 0 ? more() : setRun((r) => !r))}>{left <= 0 ? '+1 min' : run ? 'Pause' : 'Go'}</button>
           {left > 0 && <button type="button" className="btn on-ink" onClick={more} aria-label="Add one minute">+1 min</button>}
+          <button type="button" className="btn on-ink" onClick={() => { void toggleFs(); }} aria-pressed={fs} title="Press F to switch">{fs ? 'Exit full screen' : 'Full screen'}</button>
         </div>
       </header>
       <div className="bar" aria-hidden="true"><i style={{ width: `${Math.min(100, Math.max(0, (1 - left / (total + extra.current)) * 100))}%` }} /></div>
