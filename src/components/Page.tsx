@@ -4,8 +4,8 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ACCOUNTS, cloudOn } from '@/lib/cloud';
 import { useStore } from '@/lib/store';
 
-export type Tab = 'today' | 'questions' | 'cards' | 'race' | '';
-const TABS: [Tab, string, string][] = [['today', '/', 'Today'], ['questions', '/questions/', 'Questions'], ['cards', '/flashcards/', 'Flashcards'], ['race', '/race/', 'Tower race']];
+export type Tab = 'today' | 'questions' | 'cards' | '';
+const TABS: [Tab, string, string][] = [['today', '/', 'Dashboard'], ['questions', '/questions/', 'Questions'], ['cards', '/flashcards/', 'Flashcards']];
 
 /** The logo: the PMC tile with a tick. The class marks its own work. */
 export function Tile({ size = 34 }: { size?: number }) {

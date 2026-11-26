@@ -11,3 +11,5 @@ export const dayName = (s: string) => DAYS[weekday(at(s))];
 export const shortDay = (i: number) => DAYS[i].slice(0, 3);
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 export const niceDate = (s: string) => `${+s.slice(8, 10)} ${MONTHS[+s.slice(5, 7) - 1]}`;
+/** The day n days from a day, in this computer's own time. */
+export const addDays = (s: string, n: number) => iso(new Date(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10) + n));

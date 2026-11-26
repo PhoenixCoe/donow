@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Page } from '@/components/Page';
 import { Sel } from '@/components/ui';
+import { questionsCsv, saveFile } from '@/lib/csv';
 import { niceDate } from '@/lib/dates';
 import { addTopic, lastTaught, removeTopic, renameTopic, taughtOn, toggleTaught } from '@/lib/ops';
 import { eligible, lastHist, statusChip, topicStatus } from '@/lib/pick';
@@ -79,6 +80,12 @@ export default function Questions() {
               </form>
             ) : <button type="button" className="tp" onClick={() => setAdding(true)}>New topic</button>}
           </div>
+          {data.qs.length > 0 && (
+            <div style={{ marginTop: 24, display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'flex-start' }}>
+              <button type="button" className="btn s" onClick={() => saveFile(`do-now-questions-${today}.csv`, questionsCsv(data))}>Download spreadsheet</button>
+              <span className="hint">All your questions and how each class did. Opens in Excel, Sheets or Numbers.</span>
+            </div>
+          )}
         </aside>
 
         <section className="col" style={{ flex: '999 1 620px' }}>

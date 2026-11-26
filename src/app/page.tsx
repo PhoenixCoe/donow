@@ -2,17 +2,17 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { Graph } from '@/components/Graph';
 import { Page } from '@/components/Page';
 import { CoeMark, Sel, SyncChip } from '@/components/ui';
 import { cloudOn } from '@/lib/cloud';
 import { coeOn } from '@/lib/coe';
-import { dayName, shortDay } from '@/lib/dates';
-import { addClass, comingUp, ensureSet, getSet, markShown, pendingSet, periodOf, reshuffle, swapInSet } from '@/lib/ops';
-import { eligible, lastHist, statusChip, topicStatus, whyChip } from '@/lib/pick';
+import { addDays, dayName, niceDate, shortDay, weekday } from '@/lib/dates';
+import { addClass, ensureSet, getSet, markShown, pendingSet, periodOf, reshuffle, swapInSet } from '@/lib/ops';
+import { eligible, lastHist, statusChip, whyChip } from '@/lib/pick';
+import { average, recentResults, topicRows, weekLessons } from '@/lib/stats';
 import { useClass, useStore } from '@/lib/store';
-import type { Q } from '@/lib/types';
-
-const clip = (s: string, n = 64) => (s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s);
+import { short, type Q } from '@/lib/types';
 
 export default function Today() {
   const { data, ready, update, who } = useStore();
@@ -47,91 +47,131 @@ export default function Today() {
   const pending = cls ? pendingSet(data, cid, today) : undefined;
   const mine = data.qs.filter((q) => cid && eligible(q, cid));
 
-  /* Topics, worst first, for the side box. */
-  const tops = cls ? data.topics.map((t) => ({ t, s: topicStatus(data, t.id, cid) })).filter((x) => x.s) : [];
-  const order = { Recap: 0, Mixed: 1, Strong: 2, '': 3 } as const;
-  tops.sort((a, b) => order[a.s] - order[b.s]);
-  const sub = (tid: string, s: string) => {
-    const qs = data.qs.filter((q) => q.t === tid && eligible(q, cid)), want = s === 'Recap' ? 2 : 1;
-    const hit = qs.find((q) => lastHist(q, cid)?.m === want);
-    return s === 'Recap' && hit ? `Few got: “${clip(hit.q)}”` : s === 'Mixed' && hit ? `Some missed: “${clip(hit.q)}”` : 'Most got every question.';
-  };
-  const recapTopic = tops.find((x) => x.s === 'Recap') ?? tops.find((x) => x.s === 'Mixed');
-  const recapQ = recapTopic ? data.qs.find((q) => q.t === recapTopic.t.id && eligible(q, cid) && (lastHist(q, cid)?.m ?? 0) > 0) : undefined;
-  const up = cls ? comingUp(data, cid, now) : [];
+  /* The numbers on the dashboard, all for the class that is picked. */
+  const avg = cls ? average(data, cid) : { pct: null, used: 0, change: null };
+  const bars = cls ? recentResults(data, cid, 12) : [];
+  const tops = cls ? topicRows(data, cid) : [];
+  const lessons = weekLessons(data, today, now);
+  const recapTopic = tops.find((x) => x.status === 'Recap') ?? tops.find((x) => x.status === 'Mixed');
+  const recapQ = recapTopic ? data.qs.find((q) => q.t === recapTopic.id && eligible(q, cid) && (lastHist(q, cid)?.m ?? 0) > 0) : undefined;
+  const mon = addDays(today, -weekday(now));
+  const todayIdx = weekday(now);
 
   const show = () => { update((d) => markShown(d, cid, today)); router.push('/board/'); };
 
   return (
     <Page active="today">
       {cls && (
-        <main className="wrap" style={{ paddingBottom: 22 }}>
-          <section className="col" style={{ flex: '999 1 600px' }}>
-            <div className="rowend">
-              <div>
-                <div className="row" style={{ gap: 14, marginBottom: 10 }}><span className="lab">{dayName(today)}{period ? ` · period ${period}` : ''}</span><SyncChip /></div>
-                <h1 className="h1">{cls.name}</h1>
-              </div>
-              {data.classes.length > 1 && (
-                <label className="fld" style={{ width: 230 }}><span className="lab">Class</span>
-                  <Sel label="Class" value={cid} onChange={choose}>{data.classes.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</Sel></label>
+        <main className="dash">
+          <header className="rowend">
+            <div>
+              <div className="row" style={{ gap: 14, marginBottom: 10 }}><span className="lab">{dayName(today)}{period ? ` · period ${period}` : ''}</span><SyncChip /></div>
+              <h1 className="h1">{cls.name}</h1>
+            </div>
+            {data.classes.length > 1 && (
+              <label className="fld" style={{ width: 230 }}><span className="lab">Class</span>
+                <Sel label="Class" value={cid} onChange={choose}>{data.classes.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</Sel></label>
+            )}
+          </header>
+
+          <div className={mine.length === 0 ? 'dg solo' : 'dg'}>
+            <div className="dl">
+              {mine.length === 0 ? (
+                <div className="plate big o1">
+                  <div className="ph"><span>No questions yet</span></div>
+                  <div className="empty" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    <p>Add a few questions and Do Now picks five for each lesson.</p>
+                    <div className="row"><Link href="/add/" className="btn p big">Add a question</Link>{coeOn && <Link href="/coe/" className="btn g"><CoeMark />Ideas from Coe</Link>}</div>
+                  </div>
+                </div>
+              ) : (
+                <div className="plate big o1">
+                  <div className="ph"><span>Today&apos;s Do Now</span><small>{rows.length} question{rows.length === 1 ? '' : 's'} · {data.mins} min</small></div>
+                  {rows.map(({ q, why, i }) => (
+                    <div className="qr" key={q.id}>
+                      <span className="no">{i + 1}</span>
+                      <span className="tx">{q.q}{q.k === 'pic' && <div className="sub">Shows a picture</div>}</span>
+                      <span className={whyChip(why)}>{why}</span>
+                      <button type="button" className="btn s" aria-label={`Swap question ${i + 1}`} onClick={() => update((d) => swapInSet(d, cid, today, i))}>Swap</button>
+                    </div>
+                  ))}
+                  <div className="pf">
+                    <button type="button" className="btn p big" onClick={show} disabled={!rows.length}>Show on board</button>
+                    <button type="button" className="btn" onClick={() => update((d) => reshuffle(d, cid, today))}>Shuffle</button>
+                  </div>
+                </div>
+              )}
+
+              {pending && (
+                <div className="note dn o0" role="status">
+                  <span>{dayName(pending.d)}&apos;s Do Now was shown but not marked.</span>
+                  <Link href={`/result/?d=${pending.d}&c=${cid}`} className="btn s p">Mark it</Link>
+                </div>
               )}
             </div>
 
-            {mine.length === 0 ? (
-              <div className="plate big">
-                <div className="ph"><span>No questions yet</span></div>
-                <div className="empty" style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                  <p>Add a few questions and Do Now picks five for each lesson.</p>
-                  <div className="row"><Link href="/add/" className="btn p big">Add a question</Link>{coeOn && <Link href="/coe/" className="btn g"><CoeMark />Ideas from Coe</Link>}</div>
-                </div>
-              </div>
-            ) : (
-              <div className="plate big">
-                <div className="ph"><span>Today&apos;s Do Now</span><small>{rows.length} question{rows.length === 1 ? '' : 's'} · {data.mins} min</small></div>
-                {rows.map(({ q, why, i }) => (
-                  <div className="qr" key={q.id}>
-                    <span className="no">{i + 1}</span>
-                    <span className="tx">{q.q}{q.k === 'pic' && <div className="sub">Shows a picture</div>}</span>
-                    <span className={whyChip(why)}>{why}</span>
-                    <button type="button" className="btn s" aria-label={`Swap question ${i + 1}`} onClick={() => update((d) => swapInSet(d, cid, today, i))}>Swap</button>
-                  </div>
+            <div className="dr">
+              {mine.length > 0 && <div className="plate o3">
+                <div className="ph"><span>Topics</span>{tops.length > 0 && <small>Worst first</small>}</div>
+                {tops.length === 0 && <div className="empty hint">After you mark a Do Now, how {cls.name} is doing on each topic shows here.</div>}
+                {tops.slice(0, 4).map((t) => (
+                  <Link className="tr" key={t.id} href={`/questions/?t=${t.id}`} aria-label={`${t.name}: ${t.status}. Open its questions.`}>
+                    <div className="trh"><span className="d" style={{ fontSize: 28, lineHeight: 1 }}>{t.name}</span><span className={statusChip(t.status)}>{t.status}</span></div>
+                    <div className="mb" role="img" aria-label={`Most ${t.most}, some ${t.some}, few ${t.few}, not asked ${t.fresh}`}>
+                      {t.most > 0 && <i className="m0" style={{ flex: t.most }} />}{t.some > 0 && <i className="m1" style={{ flex: t.some }} />}{t.few > 0 && <i className="m2" style={{ flex: t.few }} />}{t.fresh > 0 && <i style={{ flex: t.fresh }} />}
+                    </div>
+                  </Link>
                 ))}
                 <div className="pf">
-                  <button type="button" className="btn p big" onClick={show} disabled={!rows.length}>Show on board</button>
-                  <button type="button" className="btn" onClick={() => update((d) => reshuffle(d, cid, today))}>Shuffle</button>
+                  {coeOn && recapTopic && <Link href={`/coe/?t=${recapTopic.id}${recapQ ? `&m=${recapQ.id}` : ''}`} className="btn g"><CoeMark />Recap ideas</Link>}
+                  <Link href="/questions/" className="btn">All topics</Link>
                 </div>
-              </div>
-            )}
-          </section>
+              </div>}
+            </div>
+          </div>
 
-          <aside className="col" style={{ flex: '1 1 350px' }}>
+          {mine.length > 0 && (
             <div className="plate">
-              <div className="ph"><span>Worth recapping</span></div>
-              {tops.length === 0 && <div className="empty hint">After you mark a Do Now, the topics to go over again show here.</div>}
-              {tops.slice(0, 4).map(({ t, s }) => (
-                <div className="qr" style={{ alignItems: 'flex-start' }} key={t.id}>
-                  <span className="tx"><span className="d" style={{ fontSize: 28, lineHeight: 1 }}>{t.name}</span><div className="sub">{sub(t.id, s)}</div></span>
-                  <span className={statusChip(s)}>{s}</span>
-                </div>
-              ))}
-              {(pending || (coeOn && recapTopic)) && (
-                <div className="pf">
-                  {coeOn && recapTopic && <Link href={`/coe/?t=${recapTopic.t.id}${recapQ ? `&m=${recapQ.id}` : ''}`} className="btn g"><CoeMark />Recap ideas</Link>}
-                  {pending && <Link href={`/result/?d=${pending.d}&c=${cid}`} className="btn">Mark {dayName(pending.d)}&apos;s</Link>}
-                </div>
+              <div className="ph"><span>How {cls.name} is doing</span>{bars.length > 0 && <small>Last {bars.length} Do Now{bars.length === 1 ? '' : 's'}</small>}</div>
+              {bars.length === 0 ? (
+                <div className="empty hint">Mark a Do Now and how {cls.name} did shows here as a line.</div>
+              ) : (
+                <>
+                  <Graph bars={bars} name={cls.name} />
+                  <div className="pf">
+                    <span className="chip k0">Most got it</span><span className="chip bad">Few got it</span>
+                    <span className="hint">Each point is one Do Now.{avg.pct !== null && ` In the last ${avg.used} most of the class got ${avg.pct}% of the questions${avg.change === null ? '' : avg.change === 0 ? ', the same as the 5 before' : `, ${avg.change > 0 ? 'up' : 'down'} ${Math.abs(avg.change)} point${Math.abs(avg.change) === 1 ? '' : 's'} on the 5 before`}.`}</span>
+                  </div>
+                </>
               )}
             </div>
+          )}
 
-            <div className="plate">
-              <div className="ph"><span>Coming up</span></div>
-              {up.map((u, i) => (
-                <div className="qr" key={i}><span className="tx">{data.classes.find((c) => c.id === u.c)?.name}</span><span className="d" style={{ fontSize: 22 }}>{shortDay(u.day)} P{u.period}</span></div>
-              ))}
-              {up.length === 0 && <div className="empty hint">Add your lessons and Today opens on the right class by itself.</div>}
-              <div className="pf"><Link href="/timetable/" className="btn">Edit timetable</Link></div>
-            </div>
-          </aside>
+          <div className="plate">
+            <div className="ph"><span>This week</span><small>{niceDate(mon)} to {niceDate(addDays(mon, 4))}</small></div>
+            {lessons.length === 0 ? (
+              <div className="empty hint">Add your lessons and the week shows here, with each Do Now marked off.</div>
+            ) : (
+              <div className="wk">
+                {[0, 1, 2, 3, 4].map((day) => (
+                  <div className="wc" key={day}>
+                    <div className={day === todayIdx ? 'wd now' : 'wd'}>{shortDay(day)}</div>
+                    {lessons.filter((l) => l.day === day).map((l) => {
+                      const c = data.classes.find((x) => x.id === l.c);
+                      return (
+                        <button type="button" key={`${l.day}${l.period}`} className={`wl ${l.state}${l.c === cid ? ' cur' : ''}`} onClick={() => choose(l.c)} aria-pressed={l.c === cid} aria-label={`${c?.name}, period ${l.period}${l.state === 'done' ? ', done' : l.state === 'mark' ? ', to mark' : l.state === 'next' ? ', next' : ''}`}>
+                          <span className="wp">P{l.period}</span>
+                          <b>{short(c)}</b>
+                          <small>{l.state === 'done' ? 'Done' : l.state === 'mark' ? 'Mark' : l.state === 'next' ? 'Next' : ' '}</small>
+                        </button>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            )}
+            <div className="pf"><Link href="/timetable/" className="btn">Edit timetable</Link><span className="hint">Tap a lesson to look at that class.</span></div>
+          </div>
         </main>
       )}
       {!cls && <main className="wrap"><p className="hint">Loading</p></main>}
